@@ -1,33 +1,33 @@
 #!/bin/bash
 ### BEGIN INIT INFO
-# Provides:          sinusbot
-# Required-Start:    $remote_fs $syslog
-# Required-Stop:     $remote_fs $syslog
-# Default-Start:     2 3 4 5
-# Default-Stop:      0 1 6
+# Provides: sinusbot
+# Required-Start: $local_fs $remote_fs
+# Required-Stop: $local_fs $remote_fs
+# Should-Start: $network
+# Should-Stop: $network
+# Default-Start: 2 3 4 5
+# Default-Stop: 0 1 6
 # Short-Description: Start sinusbot
-# Description:       Start sinusbot
+# Description: Start sinusbot
 ### END INIT INFO
-TS_USER="teamspeak"
+ 
+SINUS_PATH="/opt/sinusbot/"
+SINUS_FILE="sinusbot"
+SINUS_USER="teamspeak"
+SCREEN_NAME="sinusbot"
+ 
 start_ts() {
-if ! screen -list | grep -q "sinusbot"; then
-if [ $USER = $TS_USER ]
-then
-	echo "Lancement du bot"
-	screen -dmS sinusbot /opt/sinusbot/./sinusbot
-else
-	echo "Lancement du bot"
-	su $TS_USER -c "screen -dmS sinusbot /opt/sinusbot/./sinusbot && script /dev/null"
-fi
-else
-echo "Bot deja lance"
-fi
+	echo "Lancement du BOT"
+        chown -R $SINUS_USER:$SINUS_USER $SINUS_PATH && chmod 775 -R $SINUS_PATH
+	su $SINUS_USER -c "screen -dmS $SCREEN_NAME $SINUS_PATH./$SINUS_FILE"
 }
  
 stop_ts() {
-	echo "Arrêt du bot"
-	screen -X -S sinusbot quit
+	echo "Arrêt du BOT"
+	su $SINUS_USER -c "screen -X -S $SCREEN_NAME quit"
+        chown -R $SINUS_USER:$SINUS_USER $SINUS_PATH && chmod 775 -R $SINUS_PATH
 }
+ 
 case "$1" in
 	start)
 		start_ts
