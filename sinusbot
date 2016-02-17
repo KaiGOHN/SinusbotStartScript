@@ -1,0 +1,46 @@
+#!/bin/bash
+### BEGIN INIT INFO
+# Provides:          sinusbot
+# Required-Start:    $remote_fs $syslog
+# Required-Stop:     $remote_fs $syslog
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: Start sinusbot
+# Description:       Start sinusbot
+### END INIT INFO
+TS_USER="teamspeak"
+start_ts() {
+if ! screen -list | grep -q "sinusbot"; then
+if [ $USER = $TS_USER ]
+then
+	echo "Lancement du bot"
+	screen -dmS sinusbot /opt/sinusbot/./sinusbot
+else
+	echo "Lancement du bot"
+	su $TS_USER -c "screen -dmS sinusbot /opt/sinusbot/./sinusbot && script /dev/null"
+fi
+else
+echo "Bot deja lance"
+fi
+}
+ 
+stop_ts() {
+	echo "Arrêt du bot"
+	screen -X -S sinusbot quit
+}
+case "$1" in
+	start)
+		start_ts
+		;;
+	stop)
+		stop_ts
+		;;
+	restart)
+		stop_ts
+		sleep 2
+		start_ts
+		;;
+	*)
+		echo "Usage du script : $0 {start|stop|restart}"
+		;;
+esac
