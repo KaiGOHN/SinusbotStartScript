@@ -17,15 +17,23 @@ SINUS_USER="teamspeak"
 SCREEN_NAME="sinusbot"
  
 start_ts() {
+if [ $USER = "root" ]
+then
 	echo "Lancement du BOT"
-        chown -R $SINUS_USER:$SINUS_USER $SINUS_PATH && chmod 775 -R $SINUS_PATH
 	su $SINUS_USER -c "screen -dmS $SCREEN_NAME $SINUS_PATH./$SINUS_FILE"
+else
+	echo "Ce script doit être lancé en tant que root"
+fi
 }
  
 stop_ts() {
+if [ $USER = "root" ]
+then
 	echo "Arrêt du BOT"
 	su $SINUS_USER -c "screen -X -S $SCREEN_NAME quit"
-        chown -R $SINUS_USER:$SINUS_USER $SINUS_PATH && chmod 775 -R $SINUS_PATH
+else
+	echo "Ce script doit être lancé en tant que root"
+fi
 }
  
 case "$1" in
